@@ -13,18 +13,24 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class signup extends AppCompatActivity {
 
     Button check;
     EditText ID,PW;
     private String pw;
     private String id;
+    private FirebaseAuth mAuth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        mAuth = FirebaseAuth.getInstance();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("SIGN UP");
@@ -34,38 +40,28 @@ public class signup extends AppCompatActivity {
         ID = findViewById(R.id.ID);
         PW = findViewById(R.id.PW);
 
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences pref = getSharedPreferences("PREFERENCE",0);
-                SharedPreferences.Editor editor = pref.edit();
+        check.setOnClickListener(view -> {
 
-                pw =PW.getText().toString();
-                id = ID.getText().toString();
+            pw =PW.getText().toString();
+            id = ID.getText().toString();
 
+            mAuth.createUserWithEmailAndPassword(id,pw).addOnCompleteListener(this,task -> {
+                if (task.isSuccessful()){
+                    FirebaseUser user= mAuth.getCurrentUser();
 
-                if (id.length()==0){
-                    Toast.makeText(signup.this, "ID칸을 작성해주세요", Toast.LENGTH_SHORT).show();
-                }
-                if (pw.length()==0){
-                    Toast.makeText(signup.this, "PW칸을 작성해주세요", Toast.LENGTH_SHORT).show();
-                }
-                if (pw.equals(pref.getString(id,pw))&&id.length()!=0&&pw.length()!=0) {
-                    editor.putString(ID.getText().toString(), PW.getText().toString());
-                    editor.commit();
-                    Intent intent = new Intent(signup.this, MainActivity.class);
-                    startActivity(intent);
+                    finish();
                 }
                 else{
-                    Toast.makeText(signup.this, "이미 있는 아이디 비밀번호 입니", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "RegisterFailed", Toast.LENGTH_SHORT).show();
                 }
-            }
+            });
         });
 
 
 
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -76,4 +72,5 @@ public class signup extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.majorproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,59 +15,62 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
 
     EditText ID,PW;
     Button Login,Join;
     String id,pw;
-    String check;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseApp.initializeApp(getApplicationContext());
+        mAuth = FirebaseAuth.getInstance();
 
         ID = findViewById(R.id.ID);
         PW = findViewById(R.id.PW);
         Login = findViewById(R.id.Login);
         Join = findViewById(R.id.Join);
 
-        final SharedPreferences pref = getSharedPreferences("PREFERENCE",0);
 
-        Login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        Login.setOnClickListener(v -> {
 
                 id = ID.getText().toString();
                 pw = PW.getText().toString();
 
+                mAuth.signInWithEmailAndPassword(id,pw).addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful())
+                    {
+                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this, "LoginFailed", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                check = pref.getString(id,"");
-                if (check.equals(pw)){
-                    Toast.makeText(MainActivity.this, "LoginSuccess", Toast.LENGTH_LONG).show();
-                }
+            });
 
-                if(PW.getText().toString().length()==0) {
-                    Toast.makeText(MainActivity.this, "PW칸을 작성해주세요", Toast.LENGTH_SHORT).show();
-                }
-                if (ID.getText().toString().length()==0){
-                    Toast.makeText(MainActivity.this, "ID칸을 작성해주세요", Toast.LENGTH_SHORT).show();
-                }
 
-                if (!check.equals(pw)){
-                    Toast.makeText(MainActivity.this, "입력하신 정보가 맞지않습니다", Toast.LENGTH_SHORT).show();
-                }
 
-            }
-        });
-        Join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,signup.class);
-                startActivity(intent);
-            }
+        Join.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,signup.class);
+            startActivity(intent);
+
         });
 
 
     }
+
+
 
 }
