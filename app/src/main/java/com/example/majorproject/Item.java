@@ -1,13 +1,10 @@
 package com.example.majorproject;
 
 public class Item {
-    public Item(String id, String content, String uid) {
-        this.id = id;
-        this.content = content;
-        this.uid = uid;
-    }
 
     private String id;
+    private String content;
+    private String uid;
 
     public String getId() {
         return id;
@@ -32,7 +29,4 @@ public class Item {
     public void setUid(String uid) {
         this.uid = uid;
     }
-
-    private String content;
-    private String uid;
 }

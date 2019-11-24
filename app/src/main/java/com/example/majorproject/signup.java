@@ -1,5 +1,6 @@
 package com.example.majorproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -36,6 +40,7 @@ public class signup extends AppCompatActivity {
         actionBar.setTitle("SIGN UP");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+
         check = findViewById(R.id.check);
         ID = findViewById(R.id.ID);
         PW = findViewById(R.id.PW);
@@ -45,16 +50,22 @@ public class signup extends AppCompatActivity {
             pw =PW.getText().toString();
             id = ID.getText().toString();
 
-            mAuth.createUserWithEmailAndPassword(id,pw).addOnCompleteListener(this,task -> {
-                if (task.isSuccessful()){
-                    FirebaseUser user= mAuth.getCurrentUser();
 
+
+
+            mAuth.createUserWithEmailAndPassword(id,pw).addOnCompleteListener(this,task -> {
+                if (task.isSuccessful()) {
                     finish();
                 }
                 else{
                     Toast.makeText(this, "RegisterFailed", Toast.LENGTH_SHORT).show();
                 }
             });
+
+
+
+
+
         });
 
 
@@ -72,5 +83,6 @@ public class signup extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }

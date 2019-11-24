@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(id,pw).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful())
                     {
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        startActivity(new Intent(this,ResultActivity.class));
                         finish();
                     }
                     else {
