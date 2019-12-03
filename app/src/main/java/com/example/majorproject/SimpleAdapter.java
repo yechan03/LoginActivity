@@ -36,8 +36,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        Item item = mData.get(position) ;
-        holder.titleText.setText(item.getContent());
+        holder.titleText.setText(mData.get(position).getId());
+        holder.pw.setText(mData.get(position).getContent());
+        holder.uid.setText(mData.get(position).getUid());
     }
 
 

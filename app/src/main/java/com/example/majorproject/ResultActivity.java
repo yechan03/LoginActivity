@@ -1,6 +1,5 @@
 package com.example.majorproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,10 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,8 +20,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ResultActivity extends AppCompatActivity {
+
 
     private FirebaseFirestore db;
     private ArrayList<Item> items = new ArrayList<>();
@@ -29,6 +31,7 @@ public class ResultActivity extends AppCompatActivity {
     private SimpleAdapter simpleAdapter;
     private Button button;
     private EditText editText;
+    Toolbar toolbar;
 
 
     private void getData(){
@@ -54,14 +57,19 @@ public class ResultActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         recyclerView =findViewById(R.id.recycler);
+        toolbar = findViewById(R.id.Toolbar);
+
+
+        getSupportActionBar().setTitle("Your Activity Title");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ResultActivity.this, new LinearLayoutManager(this).getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, new LinearLayoutManager(this).getOrientation());
 
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(ResultActivity.this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         simpleAdapter = new SimpleAdapter(items);
         recyclerView.setAdapter(simpleAdapter);
@@ -88,8 +96,9 @@ public class ResultActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
 
             Map<String, Object> item = new HashMap<>();
-            item.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+            item.put("id", Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()));
             item.put("content", editText.getText().toString());
+            item.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
             editText.setText("");
 
             db.collection("chats").add(item).addOnCompleteListener(task -> {
@@ -105,5 +114,19 @@ public class ResultActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
 
 }
